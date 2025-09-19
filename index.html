@@ -78,6 +78,14 @@
       });
     }
 
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
     function createTeams() {
       if (players.length < 2) {
         alert("Need at least 2 players to form teams");
@@ -96,6 +104,7 @@
 
       for (let pos in grouped) {
         let arr = grouped[pos];
+        shuffle(arr); // Shuffle before splitting
         arr.forEach((player, i) => {
           if (i % 2 === 0) {
             teamBlue.push(player);
