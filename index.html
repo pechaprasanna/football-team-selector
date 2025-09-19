@@ -92,27 +92,19 @@
         return;
       }
 
-      // Group players by position
-      const grouped = players.reduce((acc, p) => {
-        acc[p.position] = acc[p.position] || [];
-        acc[p.position].push(p);
-        return acc;
-      }, {});
+      // Shuffle all players
+      let shuffledPlayers = shuffle([...players]);
 
       let teamBlue = [];
       let teamOrange = [];
 
-      for (let pos in grouped) {
-        let arr = grouped[pos];
-        shuffle(arr); // Shuffle before splitting
-        arr.forEach((player, i) => {
-          if (i % 2 === 0) {
-            teamBlue.push(player);
-          } else {
-            teamOrange.push(player);
-          }
-        });
-      }
+      shuffledPlayers.forEach((player, i) => {
+        if (i % 2 === 0) {
+          teamBlue.push(player);
+        } else {
+          teamOrange.push(player);
+        }
+      });
 
       const output = document.getElementById("teamsOutput");
       output.innerHTML = `
