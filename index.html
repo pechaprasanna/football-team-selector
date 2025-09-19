@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Football Team Selector</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
+    h1 { text-align: center; }
+    .form-section, .players-section, .teams-section { background: #fff; padding: 20px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    label { display: block; margin: 10px 0 5px; }
+    input, select, button { padding: 8px; margin-bottom: 10px; }
+    ul { list-style: none; padding: 0; }
+    li { margin: 5px 0; display: flex; justify-content: space-between; align-items: center; }
+    .team { margin-top: 15px; padding: 10px; border-radius: 6px; }
+    .blue { background: #d0e6ff; }
+    .orange { background: #ffe0b3; }
+  </style>
+</head>
+<body>
+  <h1>Football Team Selector</h1>
+  <div class="form-section">
+    <label for="playerName">Player Name:</label>
+    <input type="text" id="playerName" placeholder="Enter name" />
+
+    <label for="position">Position:</label>
+    <select id="position">
+      <option value="striker">Striker</option>
+      <option value="midfield">Mid Field</option>
+      <option value="defense">Defense</option>
+      <option value="goalie">Goalie</option>
+    </select>
+
+    <button onclick="addPlayer()">Add Player</button>
+  </div>
+
+  <div class="players-section">
+    <h2>Players List</h2>
+    <ul id="playersList"></ul>
+  </div>
+
+  <div class="teams-section">
+    <button onclick="createTeams()">Select Teams</button>
+    <div id="teamsOutput"></div>
+  </div>
+
+  <script>
+    let players = [];
+
+    function addPlayer() {
+      const name = document.getElementById("playerName").value.trim();
+      const position = document.getElementById("position").value;
+      if (!name) {
+        alert("Please enter player name");
+        return;
+      }
+      players.push({ name, position });
+      document.getElementById("playerName").value = "";
+      renderPlayers();
+    }
+
+    function removePlayer(index) {
+      players.splice(index, 1);
+      renderPlayers();
+    }
+
+    function renderPlayers() {
+      const list = document.getElementById("playersList");
+      list.innerHTML = "";
+      players.forEach((player, index) => {
+        const li = document.createElement("li");
+        li.textContent = `${player.name} - ${player.position}`;
+        const btn = document.createElement("button");
+        btn.textContent = "Remove";
+        btn.onclick = () => removePlayer(index);
+        li.appendChild(btn);
+        list.appendChild(li);
+      });
+    }
+
+    function createTeams() {
+      if (players.length < 2) {
+        alert("Need at least 2 players to form teams");
+        return;
+      }
+
+      // Group players by position
+      const grouped = players.reduce((acc, p) => {
+        acc[p.position] = acc[p.position] || [];
+        acc[p.position].push(p);
+        return acc;
+      }, {});
+
+      let teamBlue = [];
+      let teamOrange = [];
+
+      for (let pos in grouped) {
+        let arr = grouped[pos];
+        arr.forEach((player, i) => {
+          if (i % 2 === 0) {
+            teamBlue.push(player);
+          } else {
+            teamOrange.push(player);
+          }
+        });
+      }
+
+      const output = document.getElementById("teamsOutput");
+      output.innerHTML = `
+        <div class="team blue"><h3>Team Blue</h3><ul>${teamBlue.map(p => `<li>${p.name} - ${p.position}</li>`).join("")}</ul></div>
+        <div class="team orange"><h3>Team Orange</h3><ul>${teamOrange.map(p => `<li>${p.name} - ${p.position}</li>`).join("")}</ul></div>
+      `;
+    }
+  </script>
+</body>
+</html>
